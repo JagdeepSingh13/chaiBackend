@@ -2,9 +2,11 @@
   "name": "chai-backend",
   "version": "1.0.0",
   "description": "a basic app to deploy",
-  "main": "index_demo.js",
+  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "start": "node index_demo.js"
+    "dev": "nodemon src/index.js",
+    "start": "node index.js"
   },
   "keywords": [
     "node",
@@ -15,5 +17,8 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
