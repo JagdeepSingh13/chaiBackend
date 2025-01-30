@@ -2,9 +2,9 @@
   "name": "chai-backend",
   "version": "1.0.0",
   "description": "a basic app to deploy",
-  "main": "index.js",
+  "main": "index_demo.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index_demo.js"
   },
   "keywords": [
     "node",
