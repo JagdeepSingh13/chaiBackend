@@ -11,7 +11,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
-    // save refresh token to db
+    // update and save refresh token to database
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
@@ -22,7 +22,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-  // 1. get user details from frontend
+  // 1. get user details from frontend or from the user
   const { fullName, email, username, password } = req.body;
   console.log("email: ", email);
 
@@ -33,6 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   */
 
+  // if any of the given field is empty it returns true and we throw an error
   if (
     [fullName, email, username, password].some((field) => field?.trim() === "")
   ) {
@@ -53,6 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.files?.avatar[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
+  // even if we don't enter coverImage it works without error
   let coverImageLocalPath;
   if (
     req.files &&
@@ -87,6 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // 7. check for user creation
   // 8. remove password and refresh token field from response
+  // .select("-") excludes the specified fields
   const createdUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
@@ -102,7 +105,7 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  // 1. req body -> data
+  // 1. req.body -> data ( take the input data from the user )
   const { email, username, password } = req.body;
 
   // 2. username or email
@@ -157,6 +160,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
+  // we need the users id to get its data and then logout
   await User.findByIdAndUpdate(
     req.user._id,
     {
@@ -181,6 +185,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "User logged Out"));
 });
 
+// it is used to generate new Access token by verifying the user's refresh token
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;

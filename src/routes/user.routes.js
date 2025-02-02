@@ -28,6 +28,7 @@ router.route("/register").post(
 router.route("/login").post(loginUser);
 
 // secured routes
+// here verifyJWT is a middleware which comes before we go to logoutUser to check the incoming access token from the user
 router.route("/logout").post(verifyJWT, logoutUser);
 
 router.route("/refresh-token").post(refreshAccessToken);
